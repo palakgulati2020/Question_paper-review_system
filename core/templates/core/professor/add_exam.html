@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% block title %}{% if edit_mode %}Edit Exam{% else %}Add Exam{% endif %}{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>{% if edit_mode %}Edit Exam{% else %}Add Exam{% endif %} — {{ course.code }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="id_name">Exam Name</label>
+        {{ form.name }}
+        <label for="id_weightage">Weightage</label>
+        {{ form.weightage }}
+        <label for="id_max_marks">Maximum Marks</label>
+        {{ form.max_marks }}
+        <label for="id_query_window_start">Query Window Start</label>
+        {{ form.query_window_start }}
+        <label for="id_query_window_end">Query Window End</label>
+        {{ form.query_window_end }}
+        <button type="submit" class="btn btn-primary mt-8">{% if edit_mode %}Save Changes{% else %}Add Exam{% endif %}</button>
+    </form>
+</div>
+<a href="{% url 'professor_course_detail' course.id %}" class="btn btn-secondary">← Back</a>
+{% endblock %}

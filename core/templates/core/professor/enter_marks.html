@@ -1,0 +1,61 @@
+{% extends "core/base.html" %}
+{% load qprs_extras %}
+{% block title %}Enter Marks — {{ exam.name }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Enter Marks — {{ exam.name }} ({{ exam.course.code }})</h2>
+    <p class="text-sm text-muted">Maximum marks for this exam: {{ exam.max_marks }}</p>
+    
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <h3>Upload CSV (Roll No, Marks)</h3>
+        <form method="post" action="{% url 'professor_upload_csv_marks' exam.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="csv_file" accept=".csv" required>
+            <button type="submit" class="btn btn-secondary">Upload CSV Data</button>
+        </form>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Marks</th>
+            </tr>
+            {% for e in enrolled_students %}
+            <tr>
+                <td>{{ e.student.username }}</td>
+                <td>
+                    {% with sid=e.student.id|stringformat:'d' %}
+                    <input type="number" step="0.01" min="0" max="{{ exam.max_marks }}" name="marks_{{ e.student.id }}"
+                           value="{{ existing_marks|get_item:sid|default:'' }}"
+                           style="width:100px;">
+                    {% endwith %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button type="submit" class="btn btn-primary mt-8">Save Marks</button>
+    </form>
+</div>
+
+{% if enrolled_students %}
+<div class="card">
+    <h2>Current Marks Snapshot</h2>
+    <table>
+        <tr><th>Student</th><th>Marks</th></tr>
+        {% for e in enrolled_students %}
+        <tr>
+            <td>{{ e.student.username }}</td>
+            <td>
+                {% with sid=e.student.id|stringformat:'d' %}
+                {{ existing_marks|get_item:sid|default:"-" }}
+                {% endwith %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+<a href="{% url 'professor_course_detail' exam.course_id %}" class="btn btn-secondary">← Back</a>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "core/base.html" %}
+{% block title %}Assign Grades - {{ course.code }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Assign Grades for {{ course.code }} — {{ course.name }}</h2>
+    <p class="text-sm text-muted">Rows are sorted by weighted total in descending order. Formula used per exam: (weightage/max_marks) × obtained_marks. Configured total weightage: {{ total_weightage }}.</p>
+    
+    {% if grade_rows %}
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Roll Number</th>
+                <th>Total Marks (Weighted / 100)</th>
+                <th>Current Grade</th>
+                <th>New Grade</th>
+            </tr>
+            {% for row in grade_rows %}
+            {% with enrollment=row.enrollment %}
+            <tr>
+                <td>{{ enrollment.student.get_full_name|default:enrollment.student.username }}</td>
+                <td>{{ enrollment.student.roll_number|default:"-" }}</td>
+                <td>{{ row.weighted_total }}</td>
+                <td>{{ enrollment.grade|default:"-" }}</td>
+                <td>
+                    <input type="text" name="grade_{{ enrollment.id }}" value="{{ enrollment.grade|default:'' }}" maxlength="5" class="form-control" style="width: 80px;" placeholder="e.g. A">
+                </td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+        </table>
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary">Save Grades</button>
+            <a href="{% url 'professor_course_detail' course.id %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+    {% else %}
+    <p class="empty">No approved students enrolled in this course.</p>
+    <a href="{% url 'professor_course_detail' course.id %}" class="btn btn-secondary">← Back to Course</a>
+    {% endif %}
+</div>
+{% endblock %}
