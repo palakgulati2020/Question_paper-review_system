@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Question Paper Review System{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Google Sans', sans-serif !important;
+
+            background: #efefef;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #1a202c;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            width: 100%;
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .navbar a {
+            color: #edf2f7;
+            text-decoration: none;
+            margin-left: 16px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .navbar a:hover {
+            color: #63b3ed;
+        }
+
+        .nav-inline-form {
+            margin: 0;
+        }
+
+        .nav-link-btn {
+            background: none;
+            border: none;
+            color: #edf2f7;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-link-btn:hover {
+            color: #63b3ed;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 80px auto 32px; /* Increased top margin for fixed navbar */
+            padding: 0 16px;
+            flex: 1;
+        }
+
+        /* Card */
+        .card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 20px;
+            /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); */
+            /* transition: transform 0.2s, box-shadow 0.2s; */
+        }
+
+        .card:hover {
+            /* transform: translateY(-2px); */
+            /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); */
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            
+        }
+
+        th {
+            background: #317089;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+            color:white;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 6px 16px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            color: white;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: #2ab5b2;
+        }
+
+        .btn-primary:hover {
+            background: #29adb9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-secondary {
+            background: #7f8c8d;
+        }
+
+        .btn-secondary:hover {
+            background: #6c7a7b;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+
+        /* Forms */
+        form {
+            margin-top: 8px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            /* margin-bottom: 8px; */
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #555;
+        }
+
+        /* Messages */
+        .messages {
+            list-style: none;
+            margin-bottom: 16px;
+        }
+
+        .messages li {
+            padding: 10px 14px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .messages .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .messages .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .messages .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            background: none;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            text-decoration: none;
+        }
+
+        .tab.active,
+        .tab:hover {
+            color: #2c3e50;
+            border-bottom-color: #3498db;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-active {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Misc */
+        .empty {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            margin-bottom: 8px;
+        }
+
+        .form-row > div {
+            flex: 1;
+        }
+
+        .mt-8 {
+            margin-top: 8px;
+        }
+
+        .mt-16 {
+            margin-top: 16px;
+        }
+
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+
+        .text-sm {
+            font-size: 13px;
+        }
+
+        .text-muted {
+            color: #999;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: #333;
+        }
+        .modal-header {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 16px;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .modal-close:hover {
+            color: #333;
+        }
+        .modal-body {
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .notif-item {
+            padding: 12px;
+            border-bottom: 1px solid #f1f1f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+        .notif-content {
+            flex: 1;
+            margin-right: 12px;
+            font-size: 13px;
+        }
+        .notif-time {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .notif-unread {
+            background: #f0f7ff;
+            border-left: 3px solid #3498db;
+        }
+        .mark-read-btn {
+            white-space: nowrap;
+            background: transparent;
+            color: #3498db;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .mark-read-btn:hover {
+            background: #3498db;
+            color: white;
+        }
+        .notif-badge {
+            background: #e74c3c;
+            color: white;
+            border-radius: 12px;
+            padding: 2px 6px;
+            font-size: 11px;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <nav class="navbar">
+        <h1 style="display: flex; align-items: center; gap: 16px;">
+            <a href="{% url 'login' %}">QPRS</a> - {{ user.get_role_display }}
+        </h1>
+        <div style="display: flex; align-items: center; gap: 16px;">
+
+            <button type="button" class="nav-link-btn" onclick="document.getElementById('notifications-modal').style.display='flex'">
+                Notifications
+                {% if unread_notifications %}
+                <span class="notif-badge">{{ unread_notifications|length }}</span>
+                {% endif %}
+            </button>
+            <span class="text-sm">Hey {{ user.first_name }}</span>
+            <a href="{% url 'change_password' %}" class="text-sm">Change Password</a>
+            <form method="post" action="{% url 'logout' %}" class="nav-inline-form" id="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="nav-link-btn">Logout</button>
+            </form>
+        </div>
+    </nav>
+    {% endif %}
+
+    <div class="container" >
+
+
+{% block back_button %}
+         <div style="margin-bottom: 16px;">
+            <button onclick="return handleBackClick();" class="btn btn-secondary btn-sm" style="background:none;font-weight: bold;color:black;">❮ Back</button>
+        </div>
+        {% endblock %}
+
+       
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        function handleBackClick() {
+            if (document.referrer !== "") {
+                window.history.back();
+            } else {
+                window.location.href = "/"; // fallback page (home)
+            }
+        }
+        
+        window.onclick = function(event) {
+            var modal = document.getElementById('notifications-modal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+    <!-- Notifications Modal -->
+    {% if user.is_authenticated %}
+    <div id="notifications-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Inbox & Notifications</h2>
+                <div>
+                    {% if unread_notifications %}
+                    <a href="{% url 'mark_all_notifications_read' %}" class="btn btn-secondary btn-sm" style="margin-right: 8px;">Mark all as read</a>
+                    {% endif %}
+                    <button class="modal-close" onclick="document.getElementById('notifications-modal').style.display='none'">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                {% if all_notifications %}
+                    {% for notif in all_notifications %}
+                    <div class="notif-item {% if not notif.is_read %}notif-unread{% endif %}">
+                        <div class="notif-content">
+                            <span class="notif-time">{{ notif.created_at|date:"M d, Y H:i" }}</span>
+                            {{ notif.message }}
+                        </div>
+                        {% if not notif.is_read %}
+                        <a href="{% url 'mark_notification_read' notif.id %}" class="mark-read-btn">Mark Read</a>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="empty text-sm" style="text-align:center; padding:20px; color:#777;">No new notifications to display.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <footer style="text-align: center; padding: 20px; border-top: 1px solid #ddd; font-size: 13px; color: #666; background: #fff; margin-top: auto; width: 100%;">
+        <p>&copy; {% now "Y" %} IIT Guwahati. All rights reserved.</p>
+        <p style="margin-top: 5px;">Created by: Aditya Garg, Pushpendra Singh, Nilay Mittal, and Rachit Gupta</p>
+    </footer>
+</body>
+</html>
