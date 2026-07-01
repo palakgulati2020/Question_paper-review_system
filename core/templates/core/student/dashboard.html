@@ -1,0 +1,49 @@
+{% extends "core/base.html" %}
+{% block back_button %}
+<!-- empty = no back button -->
+{% endblock %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Current Courses</h2>
+    {% if current_enrollments %}
+    <table>
+        <tr><th>Code</th><th>Course</th><th>Semester</th><th>Actions</th></tr>
+        {% for e in current_enrollments %}
+        <tr>
+            <td>{{ e.course.code }}</td>
+            <td>{{ e.course.name }}</td>
+            <td>{{ e.course.semester }}</td>
+            <td><a href="{% url 'student_course_detail' e.course.id %}" class="btn btn-primary btn-sm">View</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="empty">No current courses</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Completed Courses</h2>
+    {% if completed_enrollments %}
+    <table>
+        <tr><th>Code</th><th>Course</th><th>Semester</th><th>Actions</th></tr>
+        {% for e in completed_enrollments %}
+        <tr>
+            <td>{{ e.course.code }}</td>
+            <td>{{ e.course.name }}</td>
+            <td>{{ e.course.semester }}</td>
+            <td><a href="{% url 'student_past_course' e.course.id %}" class="btn btn-secondary btn-sm">View</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="empty">No completed courses</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Add Course</h2>
+    <a href="{% url 'student_add_course' %}" class="btn btn-success">Browse Available Courses</a>
+</div>
+{% endblock %}
