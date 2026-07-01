@@ -1,325 +1,408 @@
 # Question Paper Review System
 
-A Django-based web application for managing academic assessments. Faculty upload checked answer scripts, TAs assist with grading and query resolution, and students can view their marks and raise queries — all within a structured, role-based workflow.
+A web-based academic evaluation platform built with Django that streamlines the entire answer-sheet review process. Professors can manage exams and upload evaluated scripts, Teaching Assistants can assist with grading tasks, and students can access their results, review answer scripts, and submit re-evaluation queries through a role-based interface.
 
-**Supported Roles:** Admin · Professor · TA · Student
-
----
-
-## Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [First-Time Setup](#first-time-setup)
-- [Running the Server](#running-the-server)
-- [Test Credentials](#test-credentials)
-- [Default Passwords for New Users](#default-passwords-for-new-users)
-- [Features by Role](#features-by-role)
-- [Project Structure](#project-structure)
-- [Database Configuration](#database-configuration)
-- [CSV Marks Import](#csv-marks-import)
-- [Common Issues](#common-issues)
+**User Roles:** Admin • Professor • Teaching Assistant (TA) • Student
 
 ---
 
-## Prerequisites
+## Contents
 
-Ensure the following are installed and running before you begin:
-
-| Requirement     | Version / Notes                              |
-|-----------------|----------------------------------------------|
-| Python          | 3.10 or higher                               |
-| MySQL / MariaDB | Running locally on port `3306`               |
-| pip             | Comes with Python                            |
-| Git             | For cloning the repository                   |
+* Requirements
+* Installation Guide
+* Launching the Application
+* Demo Accounts
+* Default Login Credentials
+* Role-wise Functionalities
+* Project Layout
+* Database Setup
+* Importing Marks via CSV
+* Troubleshooting
 
 ---
 
-## First-Time Setup
+# Requirements
 
-### 1. Start MySQL Service
+Before running the project, make sure the following software is installed:
+
+| Software        | Requirement                      |
+| --------------- | -------------------------------- |
+| Python          | Version 3.10 or above            |
+| MySQL / MariaDB | Running locally on port **3306** |
+| pip             | Installed with Python            |
+| Git             | Required to clone the repository |
+
+---
+
+# Installation Guide
+
+## 1. Start the MySQL Service
+
+### macOS
 
 ```bash
-# macOS (Homebrew)
 brew services start mysql
+```
 
-# Linux (systemd)
+### Linux
+
+```bash
 sudo systemctl start mysql
 ```
 
+### Windows
+
 ```powershell
-# Windows — run Command Prompt or PowerShell as Administrator
 net start MySQL80
-# Note: the service name may be "MySQL80", "MySQL", or "MariaDB" depending on your installation.
-# You can also start it from: Task Manager → Services, or the MySQL Notifier in your system tray.
 ```
 
-### 2. Create the Database
+> Depending on your installation, the service may be named **MySQL**, **MySQL80**, or **MariaDB**.
+
+---
+
+## 2. Create the Database
 
 ```bash
-# macOS / Linux
 mysql -u root -e "CREATE DATABASE IF NOT EXISTS question_paper_review;"
 ```
 
-```powershell
-# Windows
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS question_paper_review;"
+If your root account is password protected:
+
+```bash
+mysql -u root -p
 ```
 
-> If your MySQL root user has a password, add `-p` flag: `mysql -u root -p -e "CREATE DATABASE ..."`
+and create the database manually.
 
-### 3. Clone and Navigate to the Project
+---
+
+## 3. Clone the Repository
 
 ```bash
 git clone https://github.com/pushpendras0026/Question_paper_review_system.git
 cd Question_paper_review_system
 ```
 
-### 4. Create and Activate a Virtual Environment
+---
+
+## 4. Create a Virtual Environment
+
+### macOS / Linux
 
 ```bash
-# macOS / Linux
 python -m venv venv
 source venv/bin/activate
 ```
 
+### Windows
+
+Command Prompt:
+
 ```powershell
-# Windows (Command Prompt)
 python -m venv venv
 venv\Scripts\activate.bat
-
-# Windows (PowerShell)
-python -m venv venv
-venv\Scripts\Activate.ps1
-# If you get a permission error in PowerShell, run first:
-# Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-You should see `(venv)` in your terminal prompt.
+PowerShell:
 
-### 5. Install Dependencies
+```powershell
+python -m venv venv
+venv\Scripts\Activate.ps1
+```
+
+If PowerShell blocks execution:
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+A successful activation displays `(venv)` before the command prompt.
+
+---
+
+## 5. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 6. Apply Database Migrations
+---
+
+## 6. Run Database Migrations
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 7. Seed Sample Data
+---
 
-Use the built-in management command to populate the database with test users and courses:
+## 7. Populate Sample Data
 
 ```bash
 python manage.py seed_data
 ```
 
-This creates an admin, 3 professors, 5 students, 2 TAs, sample courses, and enrollments.
+This command creates sample professors, students, TAs, courses, enrollments, and an administrator account for testing.
 
-> Alternatively, create your own superuser: `python manage.py createsuperuser`
+If you prefer creating your own administrator:
+
+```bash
+python manage.py createsuperuser
+```
 
 ---
 
-## Running the Server
+# Launching the Application
 
-After the first-time setup is complete, follow these steps each time:
+Whenever you want to run the project:
 
-#### Step 1 — Ensure MySQL is running
+### 1. Start MySQL
 
 ```bash
-# macOS
 brew services start mysql
+```
 
-# Linux
+or
+
+```bash
 sudo systemctl start mysql
 ```
 
+Windows:
+
 ```powershell
-# Windows (run as Administrator)
 net start MySQL80
 ```
 
-#### Step 2 — Activate the virtual environment
+---
+
+### 2. Activate the Virtual Environment
 
 ```bash
-# macOS / Linux
 source venv/bin/activate
 ```
 
-```powershell
-# Windows (Command Prompt)
-venv\Scripts\activate.bat
+Windows:
 
-# Windows (PowerShell)
-venv\Scripts\Activate.ps1
+```powershell
+venv\Scripts\activate.bat
 ```
 
-#### Step 3 — Start the development server
+---
+
+### 3. Start Django Server
 
 ```bash
 python manage.py runserver
 ```
 
-#### Step 4 — Open in your browser
+---
+
+### 4. Open the Application
 
 ```
 http://127.0.0.1:8000/
-or 
+```
+
+or
+
+```
 http://localhost:8000/
 ```
 
-> To run on a different port: `python manage.py runserver 8080`
+To run on another port:
+
+```bash
+python manage.py runserver 8080
+```
 
 ---
 
-## Test Credentials
+# Demo Accounts
 
-Accounts seeded via `python manage.py seed_data` — **all passwords are `pass`**:
+The seeded database includes the following users. Every account uses the password:
 
-| Username   | Role      | Dashboard Redirect    |
-|------------|-----------|-----------------------|
-| `admin1`   | Admin     | Admin Dashboard       |
-| `prof1`    | Professor | Professor Dashboard   |
-| `prof2`    | Professor | Professor Dashboard   |
-| `prof3`    | Professor | Professor Dashboard   |
-| `student1` | Student   | Student Dashboard     |
-| `student2` | Student   | Student Dashboard     |
-| `ta1`      | TA        | TA Dashboard          |
-| `ta2`      | TA        | TA Dashboard          |
+```
+pass
+```
 
----
+| Username | Role               |
+| -------- | ------------------ |
+| admin1   | Administrator      |
+| prof1    | Professor          |
+| prof2    | Professor          |
+| prof3    | Professor          |
+| student1 | Student            |
+| student2 | Student            |
+| ta1      | Teaching Assistant |
+| ta2      | Teaching Assistant |
 
-## Default Passwords for New Users
-
-When the Admin creates a new user from the dashboard, passwords are automatically assigned:
-
-| Role          | Default Password        | Fallback (if ID is blank) |
-|---------------|-------------------------|---------------------------|
-| **Professor** | Their `faculty_id`      | `password123!`            |
-| **Student**   | Their `roll_number`     | `password`                |
-| **TA**        | Their `roll_number`     | `password`                |
-
-All users can change their password after login via the **"Change Password"** link in the navigation bar.
+Each user is automatically redirected to the appropriate dashboard after login.
 
 ---
 
-## Features by Role
+# Default Credentials for Newly Created Users
 
-### Admin
-- Create and manage courses (set professor, semester, department)
-- Add faculty (professors), students, and TAs manually
-- End/archive courses
-- View course grades
-- Send grade-pending notifications to professors
+When an administrator creates users through the dashboard, passwords are generated automatically.
 
-### Professor
-- View active and completed courses
-- Add and edit exams (with configurable weightage, max marks, query windows)
-- Add exam sections (for section-wise marking)
-- Upload answer scripts per student (PDF, PNG, JPG, WEBP, BMP, GIF, TIFF)
-- Enter marks manually or via **CSV upload**
-- Approve/reject student enrollment requests
-- Approve enrollment requests as a faculty advisor
-- Manage TA assignments (upload, query, marks permissions)
-- View and respond to student queries
-- Assign final grades
+| User Type | Default Password | Backup Password |
+| --------- | ---------------- | --------------- |
+| Professor | Faculty ID       | `password123!`  |
+| Student   | Roll Number      | `password`      |
+| TA        | Roll Number      | `password`      |
 
-### TA
-- View assigned courses
-- Upload answer scripts (if permitted)
-- Update marks (if permitted)
-- View and respond to queries (if permitted)
-- Upload marks via CSV
-
-### Student
-- Browse and request enrollment in courses (filtered by department)
-- View exam details and uploaded answer scripts
-- View marks (section-wise and total)
-- Raise queries on answer scripts within the query window
-- View course statistics (mean, median, percentile) for each exam
-- View past/completed course records
+Users can update their password anytime using the **Change Password** option after signing in.
 
 ---
 
-## Project Structure
+# Features
+
+## Administrator
+
+* Manage courses and departments
+* Register professors, students, and TAs
+* Archive completed courses
+* View overall course grades
+* Notify professors about pending grade submissions
+
+## Professor
+
+* Manage current and archived courses
+* Create exams with custom weightage and query periods
+* Define section-wise marking schemes
+* Upload evaluated answer sheets
+* Enter marks manually or import them from CSV files
+* Approve enrollment requests
+* Act as faculty advisor for course approvals
+* Assign and manage TAs with permission controls
+* Respond to student queries
+* Publish final grades
+
+## Teaching Assistant
+
+* Access assigned courses
+* Upload answer sheets when authorized
+* Modify marks if permission is granted
+* Handle student queries
+* Upload marks in bulk using CSV
+
+## Student
+
+* Browse available courses
+* Request enrollment
+* Access answer scripts and marks
+* Submit review queries during the allowed period
+* View statistics such as average, median, and percentile
+* Check completed course history
+
+---
+
+# Project Structure
 
 ```
 Question_paper_review_system/
+│
 ├── manage.py
 ├── requirements.txt
-├── QuestionReviewSystem/          # Django project settings & URLs
+├── QuestionReviewSystem/
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
-└── core/                          # Main application
-    ├── models.py                  # User, Course, Exam, Mark, Query, etc.
-    ├── views.py                   # All view logic (auth, student, professor, TA, admin)
-    ├── forms.py                   # Django forms for each role
-    ├── urls.py                    # URL routing
-    ├── admin.py                   # Django admin configuration
+│
+└── core/
+    ├── models.py
+    ├── views.py
+    ├── forms.py
+    ├── urls.py
+    ├── admin.py
     ├── management/
     │   └── commands/
-    │       └── seed_data.py       # Minimal test data seeder
-
+    │       └── seed_data.py
     └── templates/
         └── core/
-            ├── base.html          # Shared layout and navigation
+            ├── base.html
             ├── login.html
             ├── change_password.html
-            ├── admin/             # Admin templates
-            ├── professor/         # Professor templates
-            ├── student/           # Student templates
-            └── ta/                # TA templates
+            ├── admin/
+            ├── professor/
+            ├── student/
+            └── ta/
 ```
 
 ---
 
-## Database Configuration
+# Database Configuration
 
-The project connects to MySQL via the settings in `QuestionReviewSystem/settings.py`:
+The application uses MySQL as its backend. Configure the database in:
+
+```
+QuestionReviewSystem/settings.py
+```
 
 ```python
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'question_paper_review',
-        'USER': 'root',
-        'PASSWORD': '',        # Set this if your root user has a password
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "question_paper_review",
+        "USER": "root",
+        "PASSWORD": "",
+        "HOST": "127.0.0.1",
+        "PORT": "3306",
     }
 }
 ```
 
-> Update `PASSWORD` before running migrations if your root user is password-protected.
+If your MySQL account has a password, update the `PASSWORD` field before running migrations.
 
 ---
 
-## CSV Marks Import
+# CSV Marks Upload
 
-Both professors and TAs (if permitted) can bulk-import marks via CSV upload.
+Professors and authorized TAs can upload marks in bulk through CSV files.
 
-**Supported CSV formats:**
-- With or without a header row — the system auto-detects it.
-- Flexible delimiters: `,` `;` `|` `Tab`
-- Student can be identified by: roll number, username, or full name (in any order).
-- Marks column is identified by headers like: `marks`, `score`, `total`, `totalscore`.
+### Supported Features
 
-**Example CSV (with header):**
+* Header row is optional.
+* Accepts delimiters such as comma, semicolon, pipe, or tab.
+* Students can be identified using roll number, username, or full name.
+* Marks column is automatically detected using headers like:
+
+  * `marks`
+  * `score`
+  * `total`
+  * `totalscore`
+
+### Sample File
 
 ```csv
-Roll Number,Name,Marks
-220101001,Student1, 78.5
+Roll Number,Student Name,Marks
+220101001,Student1,78.5
 220101002,Student2,91
 ```
 
-**Rules:**
-- Marks must be `≥ 0` and `≤ max_marks` for the exam.
-- Rows that cannot be matched to an enrolled student or have invalid marks are **skipped** (a count is reported).
-- Existing marks are **updated** (not duplicated).
+### Validation Rules
+
+* Marks must lie between **0** and the exam's maximum marks.
+* Invalid or unmatched records are skipped automatically.
+* Existing marks are updated instead of creating duplicate entries.
 
 ---
 
+# Troubleshooting
+
+* Verify that the MySQL service is running before starting the application.
+* Ensure the database credentials in `settings.py` are correct.
+* Activate the virtual environment before executing Django commands.
+* If dependencies are missing, reinstall them using:
+
+```bash
+pip install -r requirements.txt
+```
+
+* Apply pending migrations if database errors occur:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
