@@ -1,0 +1,63 @@
+{% extends "core/base.html" %}
+{% block title %}TA Upload Scripts — {{ exam.name }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Upload Answer Scripts — {{ exam.name }} ({{ exam.course.code }})</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+            <div>
+                <label>Single Student</label>
+                <select name="student_id">
+                    <option value="">Select Student</option>
+                    {% for e in enrolled_students %}
+                    <option value="{{ e.student.id }}">{{ e.student.username }} (Roll: {{ e.student.roll_number|default:"-" }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>Answer Script (PDF/Image)</label>
+                <input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.bmp,.gif,.tif,.tiff">
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary" style="margin-top:24px;">Upload Single</button>
+            </div>
+        </div>
+    </form>
+    
+    <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd;">
+        <h3>Bulk Upload (by Roll Number)</h3>
+        <p class="text-sm text-muted">Select multiple files named as the student's Roll Number (e.g., <code>12345.pdf</code>).</p>
+        <form method="post" enctype="multipart/form-data" style="margin-top: 10px;">
+            {% csrf_token %}
+            <div class="form-row" style="align-items: center;">
+                <div>
+                    <input type="file" name="files" multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.bmp,.gif,.tif,.tiff" required>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-secondary">Upload Bulk</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Uploaded Scripts</h2>
+    {% if existing_scripts %}
+    <table>
+        <tr><th>Student</th><th>Roll No</th><th>File</th></tr>
+        {% for s in existing_scripts %}
+        <tr>
+            <td>{{ s.student.username }}</td>
+            <td>{{ s.student.roll_number|default:"-" }}</td>
+            <td><a href="{% url 'serve_answer_script' s.id %}" target="_blank">View</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="empty">No scripts uploaded yet</p>
+    {% endif %}
+</div>
+<a href="{% url 'ta_course_detail' assignment.id %}" class="btn btn-secondary">← Back</a>
+{% endblock %}
