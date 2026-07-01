@@ -1,0 +1,26 @@
+{% extends "core/base.html" %}
+{% block title %}Ended Courses{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Ended Courses</h2>
+    {% if courses %}
+    <table>
+        <tr><th>Code</th><th>Name</th><th>Semester</th><th>Professor</th><th>Actions</th></tr>
+        {% for c in courses %}
+        <tr>
+            <td>{{ c.code }}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.semester }}</td>
+            <td>{{ c.professor.username }}</td>
+            <td>
+                <a href="{% url 'admin_view_course_grades' c.id %}" class="btn btn-primary btn-sm">Grade Card</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="empty">No ended courses</p>
+    {% endif %}
+</div>
+<a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">← Back</a>
+{% endblock %}
