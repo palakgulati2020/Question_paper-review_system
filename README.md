@@ -79,7 +79,7 @@ and create the database manually.
 ## 3. Clone the Repository
 
 ```bash
-git clone https://github.com/pushpendras0026/Question_paper_review_system.git
+git clone https://github.com/palakgulati2020/Question_paper-review_system.git
 cd Question_paper_review_system
 ```
 
